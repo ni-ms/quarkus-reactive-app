@@ -3,10 +3,10 @@ package org.cactus.app.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class Film {
     private String description;
 
     @Basic
-    @Column(name = "release_year")
+    @Column(name = "release_year", columnDefinition = "year")
     private Integer releaseYear;
 
     @Basic
