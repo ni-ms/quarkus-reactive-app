@@ -1,8 +1,7 @@
 package org.cactus.app.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +13,15 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "film", schema = "sakila")
+@NoArgsConstructor
 public class Film {
+
+    public Film(short filmId, String title, short length) {
+        this.id = filmId;
+        this.title = title;
+        this.length = length;
+    }
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "film_id", nullable = false)
