@@ -35,8 +35,27 @@ public class FilmResource {
     @Path("/films/{page}/{size}")
     @Produces("text/plain")
     public String getFilmsByPage(@PathParam("page") long page, @PathParam("size") short size) {
-        return filmRepository.pageFilms(page, size)
-                .map(film -> film.getTitle() + " (" + film.getLength() + " minutes)")
+        return filmRepository.pageFilms(page, size).map(film -> film.getTitle() + " (" + film.getLength() + " minutes)").reduce("", (a, b) -> a + "\n" + b);
+    }
+
+
+    @GET
+    @Path("/actors/{startsWith}")
+    @Produces("text/plain")
+    public String actors(String startsWith) {
+        return filmRepository.actors(startsWith, (short) 0).map(film -> film.getTitle() + " (" + film.getLength() + " minutes)" + film.getActors().stream()
+                        .map(actor -> actor.getFirstName() + " " + actor.getLastName())
+                        .reduce("", (a, b) -> a + ", " + b))
+                .reduce("", (a, b) -> a + "\n" + b);
+    }
+
+    @GET
+    @Path("/actors/{startsWith}/{minLength}")
+    @Produces("text/plain")
+    public String actorsWithLength(String startsWith, short minLength) {
+        return filmRepository.actors(startsWith, minLength).map(film -> film.getTitle() + " (" + film.getLength() + " minutes)" + film.getActors().stream()
+                        .map(actor -> actor.getFirstName() + " " + actor.getLastName())
+                        .reduce("", (a, b) -> a + ", " + b))
                 .reduce("", (a, b) -> a + "\n" + b);
     }
 }

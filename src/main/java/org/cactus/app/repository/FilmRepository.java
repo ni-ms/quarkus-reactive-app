@@ -2,6 +2,7 @@ package org.cactus.app.repository;
 
 import com.speedment.jpastreamer.application.JPAStreamer;
 import com.speedment.jpastreamer.projection.Projection;
+import com.speedment.jpastreamer.streamconfiguration.StreamConfiguration;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.cactus.app.model.Film;
@@ -30,5 +31,13 @@ public class FilmRepository {
                 .sorted(Film$.title)
                 .skip(page * PAGE_SIZE)
                 .limit(PAGE_SIZE);
+    }
+
+    public Stream<Film> actors(String startsWith, short length) {
+        final StreamConfiguration<Film> joinSc = StreamConfiguration.of(Film.class)
+                .joining(Film$.actors);
+        return jpaStreamer.stream(joinSc)
+                .filter(Film$.title.startsWith(startsWith).and(Film$.length.greaterThan(length)))
+                .sorted(Film$.length.reversed());
     }
 }
