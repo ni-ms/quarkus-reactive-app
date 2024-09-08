@@ -58,4 +58,14 @@ public class FilmResource {
                         .reduce("", (a, b) -> a + ", " + b))
                 .reduce("", (a, b) -> a + "\n" + b);
     }
+
+    @GET
+    @Path("/update/{minLength}/{rentalRate}")
+    @Produces("text/plain")
+    public String update(short minLength, float rentalRate) {
+
+        filmRepository.updateRentalRate(minLength, rentalRate);
+        return filmRepository.getFilms(minLength).map(film -> film.getTitle() + " (" + film.getLength() + " minutes) " + film.getRentalRate())
+                .reduce("", (a, b) -> a + "\n" + b);
+    }
 }

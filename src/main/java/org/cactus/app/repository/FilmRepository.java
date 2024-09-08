@@ -5,9 +5,11 @@ import com.speedment.jpastreamer.projection.Projection;
 import com.speedment.jpastreamer.streamconfiguration.StreamConfiguration;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.cactus.app.model.Film;
 import org.cactus.app.model.Film$;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -39,5 +41,18 @@ public class FilmRepository {
         return jpaStreamer.stream(joinSc)
                 .filter(Film$.title.startsWith(startsWith).and(Film$.length.greaterThan(length)))
                 .sorted(Film$.length.reversed());
+    }
+
+    @Transactional
+    public void updateRentalRate(short minLength, Float rate) {
+        jpaStreamer.stream(Film.class)
+                .filter(Film$.length.greaterThan(minLength))
+                .forEach(film -> film.setRentalRate(BigDecimal.valueOf(rate)));
+    }
+
+    public Stream<Film> getFilms(short minLength) {
+        return jpaStreamer.stream(Film.class)
+                .filter(Film$.length.greaterThan(minLength))
+                .sorted(Film$.length);
     }
 }
